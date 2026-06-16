@@ -43,6 +43,41 @@ const validateRegister = (req, res, next) => {
   next();
 };
 
+
+const validateLogin = (req, res, next) => {
+    const {email, password } = req.body;
+
+    const errors = {};
+
+    if (!email || email.trim() === "") {
+    errors.email = "Email is required";
+  } else {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      errors.email = "Please enter a valid email address";
+    }
+  }
+
+  if (!password) {
+    errors.password = "Password is required";
+  } else if (password.length < 6) {
+    errors.password = "Password must be at least 6 characters";
+  }
+
+
+  if(Object.keys(errors).length > 0){
+    return res.status(400).json({
+        success: false,
+        errors,
+    });
+  }
+
+  next();
+
+};
+
 module.exports = {
   validateRegister,
+  validateLogin
 };
